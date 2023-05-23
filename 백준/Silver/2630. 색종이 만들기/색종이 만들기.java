@@ -1,82 +1,52 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.StringTokenizer;
 
-class coord {
-	int x;
-	int y;
-	public coord(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
-}
 public class Main {
-
-	public static void main(String[] args) throws IOException{
+	static int[][] colorMap;
+	static int[] colorCount = {0, 0};
+	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		
 		int n = Integer.parseInt(br.readLine());
-		int[][] arr = new int[n][n];
 		
+		colorMap = new int[n][n];
+		
+		StringTokenizer st;
 		for (int i = 0; i < n; i++) {
-			String[] temp = br.readLine().split(" ");
+			st = new StringTokenizer(br.readLine());
 			for (int j = 0; j < n; j++) {
-				arr[i][j]= Integer.parseInt(temp[j]);
+				colorMap[i][j] = Integer.parseInt(st.nextToken());
 			}
 		}
 		
-		boolean[][] check = new boolean[n][n];
-		int count1 = 0;
-		int count0 = 0;
-		for (int k = n; k > 0; k /= 2) {
-			for (int i = 0; i < arr.length; i+=k) {
-				for (int j = 0; j < arr.length; j+=k) {
-					if (!check[i][j]) {
-						boolean isFull = true;
-						if (arr[i][j] == 1) {
-							
-							for (int i2 = i; i2 < i+k; i2++) {
-								for (int j2 = j; j2 < j+k; j2++) {
-									if (arr[i2][j2] != 1) {
-										isFull = false;
-									}
-								}
-							}
-							if (isFull) {
-								count1++;
-								for (int i2 = i; i2 < i+k; i2++) {
-									for (int j2 = j; j2 < j+k; j2++) {
-										check[i2][j2] = true;
-									}
-								}
-							}
-						}
-						else {
-							for (int i2 = i; i2 < i+k; i2++) {
-								for (int j2 = j; j2 < j+k; j2++) {
-									if (arr[i2][j2] != 0) {
-										isFull = false;
-									}
-								}
-							}
-							if (isFull) {
-								count0++;
-								for (int i2 = i; i2 < i+k; i2++) {
-									for (int j2 = j; j2 < j+k; j2++) {
-										check[i2][j2] = true;
-									}
-								}
-							}
-						}	
-					}
+		dfs(0,0,n);
+		
+		System.out.println(colorCount[0]);
+		System.out.println(colorCount[1]);
+	}
+	public static void dfs(int startR, int startC, int size) {
+		boolean flag = true;
+		int color = colorMap[startR][startC];
+		
+		for (int i = startR; i < startR+size; i++) {
+			for (int j = startC; j < startC+size; j++) {
+				if (colorMap[i][j] != color) {
+					flag = false;
+					dfs(startR, startC, size/2);
+					dfs(startR, startC+(size/2), size/2);
+					dfs(startR+(size/2), startC, size/2);
+					dfs(startR+(size/2), startC+(size/2), size/2);
+					break;
 				}
 			}
+			if (!flag) {
+				break;
+			}
 		}
-		
-		System.out.println(count0);
-		System.out.println(count1);
+		if (flag) {
+			colorCount[color]++;
+		}
 	}
-	
 }
