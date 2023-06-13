@@ -39,22 +39,19 @@ public class Main {
 			int t = Integer.parseInt(st.nextToken());
 			pq.add(new time(s, t));
 		}
-		int[] checkTime = new int[200000];
-		int count = 0;
+		PriorityQueue<Integer> checkTime = new PriorityQueue<>();
+		int answer = 0;
 		while (!pq.isEmpty()) {
 			time temp = pq.poll();
-			boolean check = false;
-			for (int i = 0; i < count; i++) {
-				if (checkTime[i] <= temp.start) {
-					check = true;
-					checkTime[i] = temp.end;
-					break;
-				}
+			if (checkTime.size() == 0 || temp.start < checkTime.peek()) {
+				checkTime.add(temp.end);
+				answer = Math.max(answer, checkTime.size());
 			}
-			if (!check) {
-				checkTime[count++] = temp.end;
+			else {
+				checkTime.poll();
+				checkTime.add(temp.end);
 			}
 		}
-		System.out.println(count);
+		System.out.println(answer);
 	}
 }
