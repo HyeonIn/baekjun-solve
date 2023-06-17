@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
@@ -19,25 +20,25 @@ public class Main {
 		int n = Integer.parseInt(br.readLine());
 		
 		int[] result = new int[n];
-		Stack<coord> s = new Stack<>();
+		ArrayDeque<coord> s = new ArrayDeque<>();
 		
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		for (int i = 0; i < n; i++) {
 			int now = Integer.parseInt(st.nextToken());
 			
 			if (s.isEmpty()) {
-				s.push(new coord(now, i));
+				s.add(new coord(now, i));
 			}
 			else {
-				while (!s.isEmpty() && now > s.peek().num) {
-					coord nge = s.pop();
+				while (!s.isEmpty() && now > s.peekLast().num) {
+					coord nge = s.pollLast();
 					result[nge.idx] = now;
 				}
-				s.push(new coord(now, i));
+				s.add(new coord(now, i));
 			}
 		}
 		while (!s.isEmpty()) {
-			coord now = s.pop();
+			coord now = s.pollLast();
 			result[now.idx] = -1;
 		}
 		StringBuilder sb = new StringBuilder();
